@@ -14,18 +14,36 @@ def venn(data, names=None, fill="number", show_names=True, show_plot=True, **kwd
     fill = ["number"|"logic"|"both"], fill with number, logic label, or both
     show_names = [True|False]
     show_plot = [True|False]
+    
+    kwds
+    colors: colors of the ellipses/circles in the Venn
+    figname: name of the outputfile. Recommended to save as svg.
+    figsize: size of the output figure
     """
 
     if data is None:
         raise Exception("No data!")
+        
+    fig = None
+    ax  = None
+    
     if len(data) == 2:
-        venn2(data, names, fill, show_names, show_plot, **kwds)
+        fig, ax = venn2(data, names, fill, show_names, **kwds)
     elif len(data) == 3:
-        venn3(data, names, fill, show_names, show_plot, **kwds)
+        fig, ax = venn3(data, names, fill, show_names, **kwds)
     elif len(data) == 4:
-        venn4(data, names, fill, show_names, show_plot, **kwds)
+        fig, ax = venn4(data, names, fill, show_names, **kwds)
     else:
         raise Exception("currently only 2-4 sets venn diagrams are supported")
+    
+    if 'figname' in kwds:
+        pylab.savefig(kwds['figname'])
+
+    if show_plot:
+        pylab.show()
+        
+
+
 
 #--------------------------------------------------------------------
 def get_labels(data, fill="number"):
@@ -81,7 +99,7 @@ def get_labels(data, fill="number"):
     return labels
 
 #--------------------------------------------------------------------
-def venn2(data=None, names=None, fill="number", show_names=True, show_plot=True, **kwds):
+def venn2(data=None, names=None, fill="number", show_names=True, **kwds):
 
     if (data is None) or len(data) != 2:
         raise Exception("length of data should be 2!")
@@ -131,12 +149,11 @@ def venn2(data=None, names=None, fill="number", show_names=True, show_plot=True,
 
     leg = ax.legend(names, loc='best', fancybox=True)
     leg.get_frame().set_alpha(0.5)
-
-    if show_plot:
-        pylab.show()
+    
+    return fig, ax
 
 #--------------------------------------------------------------------
-def venn3(data=None, names=None, fill="number", show_names=True, show_plot=True, **kwds):
+def venn3(data=None, names=None, fill="number", show_names=True, **kwds):
 
     if (data is None) or len(data) != 3:
         raise Exception("length of data should be 3!")
@@ -195,11 +212,10 @@ def venn3(data=None, names=None, fill="number", show_names=True, show_plot=True,
     leg = ax.legend(names, loc='best', fancybox=True)
     leg.get_frame().set_alpha(0.5)
 
-    if show_plot:
-        pylab.show()
+    return fig, ax
 
 #--------------------------------------------------------------------
-def venn4(data=None, names=None, fill="number", show_names=True, show_plot=True, **kwds):
+def venn4(data=None, names=None, fill="number", show_names=True, **kwds):
 
     if (data is None) or len(data) != 4:
         raise Exception("length of data should be 4!")
@@ -266,8 +282,7 @@ def venn4(data=None, names=None, fill="number", show_names=True, show_plot=True,
     leg = ax.legend(names, loc='best', fancybox=True)
     leg.get_frame().set_alpha(0.5)
 
-    if show_plot:
-        pylab.show()
+    return fig, ax
 
 #--------------------------------------------------------------------
 def test():
@@ -279,7 +294,7 @@ def test():
     venn([range(10), range(5,15)])
     venn([range(10), range(5,15)], ["aaaa", "bbbb"], fill="logic", show_names=False)
     # venn4()
-    venn([range(10), range(5,15), range(3,8), range(4,9)], ["aaaa", "bbbb", "cccc", "dddd"], figsize=(12,12))
+    venn([range(10), range(5,15), range(3,8), range(4,9)], ["aaaa", "bbbb", "cccc", "dddd"], figsize=(12,12), figname='venn4_test.svg')
 
 #--------------------------------------------------------------------
 if __name__ == '__main__':
